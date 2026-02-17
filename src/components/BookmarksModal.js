@@ -52,7 +52,9 @@ export function BookmarksModal({
                   </View>
 
                   <Text style={styles.bookmarkedSalary}>{item.salary}</Text>
-                  <Text numberOfLines={3} style={styles.bookmarkedDescription}>{item.description}</Text>
+                  <Text numberOfLines={3} style={styles.bookmarkedDescription}>
+                    {item.description}
+                  </Text>
 
                   <View style={styles.previewMetaRow}>
                     <Text style={styles.previewMetaItem}>📍 {item.location}</Text>
