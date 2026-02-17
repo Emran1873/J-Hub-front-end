@@ -32,6 +32,7 @@ export function BookmarksModal({
           ) : (
             <FlatList
               data={bookmarkedJobs}
+              showsVerticalScrollIndicator={false}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.bookmarkedItem}>
