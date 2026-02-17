@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
 
 export function HeaderBar({ bookmarkedCount, onOpenBookmarks }) {
@@ -27,13 +27,22 @@ export function HeaderBar({ bookmarkedCount, onOpenBookmarks }) {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: 18,
-    paddingTop: 10,
-    paddingBottom: 8,
+    paddingHorizontal: 2,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 0) + 10 : 12,
+    paddingBottom: 12,
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 12,
+    backgroundColor: 'rgba(248, 250, 252, 0.92)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(148, 163, 184, 0.2)',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.09,
+    shadowRadius: 18,
+    elevation: 6,
   },
   title: {
     fontSize: 28,

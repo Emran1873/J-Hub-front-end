@@ -2,7 +2,13 @@ import React from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
 
-export function BookmarksModal({ visible, bookmarkedJobs, onClose }) {
+export function BookmarksModal({
+  visible,
+  bookmarkedJobs,
+  onClose,
+  onToggleBookmark,
+  onApply,
+}) {
   return (
     <Modal
       animationType="slide"
@@ -29,11 +35,32 @@ export function BookmarksModal({ visible, bookmarkedJobs, onClose }) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.bookmarkedItem}>
-                  <View style={styles.bookmarkedTextWrap}>
-                    <Text style={styles.bookmarkedJobTitle}>{item.title}</Text>
-                    <Text style={styles.bookmarkedCompany}>{item.company}</Text>
+                  <View style={styles.bookmarkedItemTop}>
+                    <View style={styles.bookmarkedTextWrap}>
+                      <Text style={styles.bookmarkedJobTitle}>{item.title}</Text>
+                      <Text style={styles.bookmarkedCompany}>{item.company}</Text>
+                    </View>
+
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel="Remove bookmark"
+                      onPress={() => onToggleBookmark(item.id)}
+                      style={styles.iconButton}
+                    >
+                      <Text style={styles.iconText}>🔖</Text>
+                    </Pressable>
                   </View>
+
                   <Text style={styles.bookmarkedSalary}>{item.salary}</Text>
+
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Apply to this job"
+                    onPress={() => onApply(item.id)}
+                    style={styles.applyButton}
+                  >
+                    <Text style={styles.applyButtonText}>Apply</Text>
+                  </Pressable>
                 </View>
               )}
             />
@@ -54,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '65%',
+    maxHeight: '72%',
     padding: 16,
   },
   modalHeader: {
@@ -85,8 +112,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#F8FAFC',
   },
+  bookmarkedItemTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
   bookmarkedTextWrap: {
     marginBottom: 4,
+    flex: 1,
   },
   bookmarkedJobTitle: {
     color: colors.textPrimary,
@@ -99,6 +132,33 @@ const styles = StyleSheet.create({
   },
   bookmarkedSalary: {
     color: colors.success,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  iconButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.pillBackground,
+    borderWidth: 1,
+    borderColor: '#93C5FD',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconText: {
+    fontSize: 16,
+  },
+  applyButton: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+    borderWidth: 1,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 11,
+  },
+  applyButtonText: {
+    color: '#FFFFFF',
     fontWeight: '700',
   },
 });

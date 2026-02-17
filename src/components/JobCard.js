@@ -54,6 +54,16 @@ export function JobCard({
     <View style={[styles.card, isExpanded && styles.cardExpanded]}>
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark this job'}
+        hitSlop={8}
+        onPress={() => onToggleBookmark(job.id)}
+        style={[styles.bookmarkIconButton, isBookmarked && styles.bookmarkIconButtonActive]}
+      >
+        <Text style={styles.bookmarkIcon}>{isBookmarked ? '🔖' : '📑'}</Text>
+      </Pressable>
+
+      <Pressable
+        accessibilityRole="button"
         accessibilityLabel={`${job.title} at ${job.company}`}
         onPress={handleExpandPress}
       >
@@ -92,15 +102,6 @@ export function JobCard({
       <View style={styles.actionsRow}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark this job'}
-          onPress={() => onToggleBookmark(job.id)}
-          style={[styles.actionButton, isBookmarked && styles.bookmarkActive]}
-        >
-          <Text style={styles.actionButtonText}>{isBookmarked ? '🔖 Saved' : '🔖 Save'}</Text>
-        </Pressable>
-
-        <Pressable
-          accessibilityRole="button"
           accessibilityLabel="Apply to this job"
           onPress={() => onApply(job.id)}
           style={[styles.actionButton, styles.applyButton]}
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 16,
     elevation: 2,
+    position: 'relative',
   },
   cardExpanded: {
     borderColor: colors.accent,
@@ -217,8 +219,6 @@ const styles = StyleSheet.create({
   },
   actionsRow: {
     marginTop: 12,
-    flexDirection: 'row',
-    gap: 10,
   },
   actionButton: {
     flex: 1,
@@ -234,15 +234,34 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontWeight: '700',
   },
-  bookmarkActive: {
-    backgroundColor: colors.pillBackground,
-    borderColor: '#93C5FD',
-  },
   applyButton: {
     backgroundColor: colors.accent,
     borderColor: colors.accent,
+    width: '100%',
+    paddingVertical: 12,
   },
   applyButtonText: {
     color: '#FFFFFF',
+  },
+  bookmarkIconButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+  },
+  bookmarkIconButtonActive: {
+    backgroundColor: colors.pillBackground,
+    borderColor: '#93C5FD',
+  },
+  bookmarkIcon: {
+    fontSize: 16,
   },
 });
