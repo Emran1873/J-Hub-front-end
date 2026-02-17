@@ -2,7 +2,13 @@ import React from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
 
-export function BookmarksModal({ visible, bookmarkedJobs, onClose }) {
+export function BookmarksModal({
+  visible,
+  bookmarkedJobs,
+  onClose,
+  onToggleBookmark,
+  onApply,
+}) {
   return (
     <Modal
       animationType="slide"
@@ -29,11 +35,39 @@ export function BookmarksModal({ visible, bookmarkedJobs, onClose }) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.bookmarkedItem}>
-                  <View style={styles.bookmarkedTextWrap}>
-                    <Text style={styles.bookmarkedJobTitle}>{item.title}</Text>
-                    <Text style={styles.bookmarkedCompany}>{item.company}</Text>
+                  <View style={styles.bookmarkedItemTop}>
+                    <View style={styles.bookmarkedTextWrap}>
+                      <Text style={styles.bookmarkedJobTitle}>{item.title}</Text>
+                      <Text style={styles.bookmarkedCompany}>{item.company}</Text>
+                    </View>
+
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel="Remove bookmark"
+                      onPress={() => onToggleBookmark(item.id)}
+                      style={styles.iconButton}
+                    >
+                      <Text style={styles.iconText}>🔖</Text>
+                    </Pressable>
                   </View>
+
                   <Text style={styles.bookmarkedSalary}>{item.salary}</Text>
+                  <Text numberOfLines={3} style={styles.bookmarkedDescription}>{item.description}</Text>
+
+                  <View style={styles.previewMetaRow}>
+                    <Text style={styles.previewMetaItem}>📍 {item.location}</Text>
+                    <Text style={styles.previewMetaItem}>🧭 {item.level}</Text>
+                    <Text style={styles.previewMetaItem}>🕒 {item.employmentType}</Text>
+                  </View>
+
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Apply to this job"
+                    onPress={() => onApply(item.id)}
+                    style={styles.applyButton}
+                  >
+                    <Text style={styles.applyButtonText}>Apply</Text>
+                  </Pressable>
                 </View>
               )}
             />
@@ -54,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '65%',
+    maxHeight: '78%',
     padding: 16,
   },
   modalHeader: {
@@ -85,8 +119,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#F8FAFC',
   },
+  bookmarkedItemTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
   bookmarkedTextWrap: {
     marginBottom: 4,
+    flex: 1,
   },
   bookmarkedJobTitle: {
     color: colors.textPrimary,
@@ -99,6 +139,56 @@ const styles = StyleSheet.create({
   },
   bookmarkedSalary: {
     color: colors.success,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  bookmarkedDescription: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 8,
+  },
+  previewMetaRow: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  previewMetaItem: {
+    backgroundColor: 'rgba(248, 250, 252, 0.8)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.35)',
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '600',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  iconButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.pillBackground,
+    borderWidth: 1,
+    borderColor: '#93C5FD',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconText: {
+    fontSize: 16,
+  },
+  applyButton: {
+    backgroundColor: 'rgba(59, 130, 246, 0.34)',
+    borderColor: 'rgba(191, 219, 254, 0.8)',
+    borderWidth: 1,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 11,
+  },
+  applyButtonText: {
+    color: '#FFFFFF',
     fontWeight: '700',
   },
 });

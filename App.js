@@ -54,19 +54,20 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
-      <ExpoStatusBar style="dark" />
-
-      <HeaderBar
-        bookmarkedCount={bookmarkedJobIds.length}
-        onOpenBookmarks={openBookmarks}
-      />
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+      <ExpoStatusBar style="dark" translucent />
 
       <FlatList
         contentContainerStyle={styles.listContent}
         data={sortedJobs}
         initialNumToRender={6}
         keyExtractor={(item) => item.id}
+        ListHeaderComponent={
+          <HeaderBar
+            bookmarkedCount={bookmarkedJobIds.length}
+            onOpenBookmarks={openBookmarks}
+          />
+        }
         maxToRenderPerBatch={8}
         removeClippedSubviews
         renderItem={({ item }) => (
@@ -80,12 +81,15 @@ export default function App() {
           />
         )}
         showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[0]}
         windowSize={10}
       />
 
       <BookmarksModal
         bookmarkedJobs={bookmarkedJobs}
+        onApply={handleApply}
         onClose={closeBookmarks}
+        onToggleBookmark={toggleBookmark}
         visible={isBookmarkedModalVisible}
       />
     </SafeAreaView>
@@ -99,7 +103,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
     paddingBottom: 24,
   },
 });

@@ -54,6 +54,16 @@ export function JobCard({
     <View style={[styles.card, isExpanded && styles.cardExpanded]}>
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark this job'}
+        hitSlop={8}
+        onPress={() => onToggleBookmark(job.id)}
+        style={[styles.bookmarkIconButton, isBookmarked && styles.bookmarkIconButtonActive]}
+      >
+        <Text style={styles.bookmarkIcon}>{isBookmarked ? '🔖' : '📑'}</Text>
+      </Pressable>
+
+      <Pressable
+        accessibilityRole="button"
         accessibilityLabel={`${job.title} at ${job.company}`}
         onPress={handleExpandPress}
       >
@@ -68,6 +78,15 @@ export function JobCard({
         </View>
 
         <Text style={styles.salary}>{job.salary}</Text>
+
+        <View style={styles.previewContainer}>
+          <Text numberOfLines={2} style={styles.previewText}>{job.description}</Text>
+          <View style={styles.previewMetaRow}>
+            <Text style={styles.previewMetaItem}>📍 {job.location}</Text>
+            <Text style={styles.previewMetaItem}>🧭 {job.level}</Text>
+            <Text style={styles.previewMetaItem}>🕒 {job.employmentType}</Text>
+          </View>
+        </View>
 
         {isExpanded ? (
           <View style={styles.detailsContainer}>
@@ -84,21 +103,10 @@ export function JobCard({
 
             <Text style={styles.tapHint}>Tap card area again to collapse</Text>
           </View>
-        ) : (
-          <Text style={styles.tapHint}>Tap to view full job details</Text>
-        )}
+        ) : null}
       </Pressable>
 
       <View style={styles.actionsRow}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark this job'}
-          onPress={() => onToggleBookmark(job.id)}
-          style={[styles.actionButton, isBookmarked && styles.bookmarkActive]}
-        >
-          <Text style={styles.actionButtonText}>{isBookmarked ? '🔖 Saved' : '🔖 Save'}</Text>
-        </Pressable>
-
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Apply to this job"
@@ -125,6 +133,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 16,
     elevation: 2,
+    position: 'relative',
   },
   cardExpanded: {
     borderColor: colors.accent,
@@ -165,6 +174,32 @@ const styles = StyleSheet.create({
     color: colors.success,
     fontSize: 16,
     fontWeight: '700',
+  },
+  previewContainer: {
+    marginTop: 10,
+    opacity: 0.72,
+  },
+  previewText: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  previewMetaRow: {
+    marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  previewMetaItem: {
+    backgroundColor: 'rgba(248, 250, 252, 0.7)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.35)',
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '600',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   detailsContainer: {
     marginTop: 14,
@@ -217,32 +252,52 @@ const styles = StyleSheet.create({
   },
   actionsRow: {
     marginTop: 12,
-    flexDirection: 'row',
-    gap: 10,
   },
   actionButton: {
     flex: 1,
-    borderRadius: 10,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: '#F8FAFC',
+    borderColor: 'rgba(191, 219, 254, 0.8)',
+    backgroundColor: 'rgba(59, 130, 246, 0.34)',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 2,
   },
   actionButtonText: {
     color: colors.textPrimary,
     fontWeight: '700',
   },
-  bookmarkActive: {
-    backgroundColor: colors.pillBackground,
-    borderColor: '#93C5FD',
-  },
   applyButton: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
+    width: '100%',
   },
   applyButtonText: {
     color: '#FFFFFF',
+    letterSpacing: 0.4,
+  },
+  bookmarkIconButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+  },
+  bookmarkIconButtonActive: {
+    backgroundColor: colors.pillBackground,
+    borderColor: '#93C5FD',
+  },
+  bookmarkIcon: {
+    fontSize: 16,
   },
 });
