@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, FlatList, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { HeaderBar } from './src/components/HeaderBar';
 import { JobCard } from './src/components/JobCard';
@@ -122,16 +122,26 @@ export default function App() {
           }
           ListHeaderComponent={
             <View style={styles.bookmarkedHeader}>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Go back to all jobs"
-                onPress={openJobsPage}
-                style={styles.backButton}
-              >
-                <Text style={styles.backButtonText}>← Jobs</Text>
-              </Pressable>
+              <View style={styles.bookmarkedTitleRow}>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Go back to all jobs"
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  onPress={openJobsPage}
+                  style={styles.backArrowTap}
+                >
+                  <Text style={styles.backArrowText}>←</Text>
+                </Pressable>
 
-              <Text style={styles.bookmarkedHeaderTitle}>Saved Jobs</Text>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Go back to all jobs"
+                  onPress={openJobsPage}
+                >
+                  <Text style={styles.bookmarkedHeaderTitle}>Saved Jobs</Text>
+                </Pressable>
+              </View>
+
               <Text style={styles.bookmarkedHeaderMeta}>{bookmarkedJobs.length} saved</Text>
             </View>
           }
@@ -155,26 +165,27 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   bookmarkedHeader: {
-    paddingTop: 10,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 0) + 6 : 10,
     paddingBottom: 12,
     marginBottom: 10,
     backgroundColor: 'rgba(248, 250, 252, 0.82)',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(148, 163, 184, 0.45)',
   },
-  backButton: {
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 10,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    marginBottom: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  bookmarkedTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  backButtonText: {
+  backArrowTap: {
+    paddingVertical: 2,
+    paddingHorizontal: 2,
+  },
+  backArrowText: {
     color: colors.textPrimary,
+    fontSize: 22,
     fontWeight: '700',
+    lineHeight: 24,
   },
   bookmarkedHeaderTitle: {
     color: colors.textPrimary,
