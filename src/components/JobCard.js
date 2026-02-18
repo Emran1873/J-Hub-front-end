@@ -79,6 +79,15 @@ export function JobCard({
 
         <Text style={styles.salary}>{job.salary}</Text>
 
+        <View style={styles.previewContainer}>
+          <Text numberOfLines={2} style={styles.previewText}>{job.description}</Text>
+          <View style={styles.previewMetaRow}>
+            <Text style={styles.previewMetaItem}>📍 {job.location}</Text>
+            <Text style={styles.previewMetaItem}>🧭 {job.level}</Text>
+            <Text style={styles.previewMetaItem}>🕒 {job.employmentType}</Text>
+          </View>
+        </View>
+
         {isExpanded ? (
           <View style={styles.detailsContainer}>
             <Text style={styles.description}>{job.description}</Text>
@@ -94,9 +103,7 @@ export function JobCard({
 
             <Text style={styles.tapHint}>Tap card area again to collapse</Text>
           </View>
-        ) : (
-          <Text style={styles.tapHint}>Tap to view full job details</Text>
-        )}
+        ) : null}
       </Pressable>
 
       <View style={styles.actionsRow}>
@@ -168,6 +175,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
+  previewContainer: {
+    marginTop: 10,
+    opacity: 0.72,
+  },
+  previewText: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  previewMetaRow: {
+    marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  previewMetaItem: {
+    backgroundColor: 'rgba(248, 250, 252, 0.7)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.35)',
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '600',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
   detailsContainer: {
     marginTop: 14,
     borderTopWidth: 1,
@@ -222,26 +255,50 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    borderRadius: 10,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: '#F8FAFC',
+    borderColor: 'rgba(191, 219, 254, 0.8)',
+    backgroundColor: 'rgba(59, 130, 246, 0.34)',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 2,
   },
   actionButtonText: {
     color: colors.textPrimary,
     fontWeight: '700',
   },
   applyButton: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
     width: '100%',
-    paddingVertical: 12,
   },
   applyButtonText: {
     color: '#FFFFFF',
+    letterSpacing: 0.4,
+  },
+  bookmarkIconButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+  },
+  bookmarkIconButtonActive: {
+    backgroundColor: colors.pillBackground,
+    borderColor: '#93C5FD',
+  },
+  bookmarkIcon: {
+    fontSize: 16,
   },
   bookmarkIconButton: {
     position: 'absolute',

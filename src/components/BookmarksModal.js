@@ -32,6 +32,7 @@ export function BookmarksModal({
           ) : (
             <FlatList
               data={bookmarkedJobs}
+              showsVerticalScrollIndicator={false}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.bookmarkedItem}>
@@ -52,6 +53,15 @@ export function BookmarksModal({
                   </View>
 
                   <Text style={styles.bookmarkedSalary}>{item.salary}</Text>
+                  <Text numberOfLines={3} style={styles.bookmarkedDescription}>
+                    {item.description}
+                  </Text>
+
+                  <View style={styles.previewMetaRow}>
+                    <Text style={styles.previewMetaItem}>📍 {item.location}</Text>
+                    <Text style={styles.previewMetaItem}>🧭 {item.level}</Text>
+                    <Text style={styles.previewMetaItem}>🕒 {item.employmentType}</Text>
+                  </View>
 
                   <Pressable
                     accessibilityRole="button"
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '72%',
+    maxHeight: '78%',
     padding: 16,
   },
   modalHeader: {
@@ -133,7 +143,30 @@ const styles = StyleSheet.create({
   bookmarkedSalary: {
     color: colors.success,
     fontWeight: '700',
+    marginBottom: 8,
+  },
+  bookmarkedDescription: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 8,
+  },
+  previewMetaRow: {
     marginBottom: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  previewMetaItem: {
+    backgroundColor: 'rgba(248, 250, 252, 0.8)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.35)',
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '600',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   iconButton: {
     width: 34,
@@ -149,8 +182,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   applyButton: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
+    backgroundColor: 'rgba(59, 130, 246, 0.34)',
+    borderColor: 'rgba(191, 219, 254, 0.8)',
     borderWidth: 1,
     borderRadius: 10,
     alignItems: 'center',

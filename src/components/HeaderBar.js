@@ -5,10 +5,7 @@ import { colors } from '../theme/colors';
 export function HeaderBar({ bookmarkedCount, onOpenBookmarks }) {
   return (
     <View style={styles.header}>
-      <View>
-        <Text style={styles.title}>Top Job Matches</Text>
-        <Text style={styles.subtitle}>Tap any job card to view full details.</Text>
-      </View>
+      <Text style={styles.title}>Top Job Matches</Text>
 
       <Pressable
         accessibilityRole="button"
@@ -35,32 +32,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: 'rgba(248, 250, 252, 0.92)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(148, 163, 184, 0.2)',
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.09,
-    shadowRadius: 18,
-    elevation: 6,
+    backgroundColor: 'rgba(248, 250, 252, 0.72)',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(148, 163, 184, 0.45)',
   },
   title: {
     fontSize: 28,
     fontWeight: '800',
     color: colors.textPrimary,
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 14,
-    color: colors.textSecondary,
+    letterSpacing: 0.2,
   },
   bookmarkHeaderButton: {
     width: 44,
     height: 44,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: 'rgba(148, 163, 184, 0.4)',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
   },
