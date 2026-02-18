@@ -1,0 +1,16 @@
+# API List for J-Hub Front End
+
+This app currently makes **no external HTTP API calls** for jobs or bookmarks.
+
+## Current runtime data source
+1. Local static dataset import
+   - Description: Job listings are loaded from a local file, not from a remote API.
+   - Source: `src/data/jobs.js` is imported in `App.js` and used directly via `sortedJobs`/`bookmarkedJobs`.
+
+## Network/API calls currently implemented
+- None.
+
+## Notes
+- Applying to a job currently triggers a local `Alert` only.
+- Bookmarking/saved jobs are maintained in local React state (`bookmarkedJobIds`) only.
+- If backend APIs are added later, this file should be updated with endpoint, method, payload, response shape, and purpose.
