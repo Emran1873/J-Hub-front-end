@@ -1,14 +1,11 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
 
 export function HeaderBar({ bookmarkedCount, onOpenBookmarks }) {
   return (
     <View style={styles.header}>
-      <View>
-        <Text style={styles.title}>Top Job Matches</Text>
-        <Text style={styles.subtitle}>Tap any job card to view full details.</Text>
-      </View>
+      <Text style={styles.title}>Top Job Matches</Text>
 
       <Pressable
         accessibilityRole="button"
@@ -27,31 +24,31 @@ export function HeaderBar({ bookmarkedCount, onOpenBookmarks }) {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: 18,
-    paddingTop: 10,
-    paddingBottom: 8,
+    paddingHorizontal: 2,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 0) + 10 : 12,
+    paddingBottom: 12,
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 12,
+    backgroundColor: 'rgba(248, 250, 252, 0.72)',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(148, 163, 184, 0.45)',
   },
   title: {
     fontSize: 28,
     fontWeight: '800',
     color: colors.textPrimary,
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 14,
-    color: colors.textSecondary,
+    letterSpacing: 0.2,
   },
   bookmarkHeaderButton: {
     width: 44,
     height: 44,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: 'rgba(148, 163, 184, 0.4)',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
   },
