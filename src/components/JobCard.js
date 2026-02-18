@@ -300,4 +300,25 @@ const styles = StyleSheet.create({
   bookmarkIcon: {
     fontSize: 16,
   },
+  bookmarkIconButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+  },
+  bookmarkIconButtonActive: {
+    backgroundColor: colors.pillBackground,
+    borderColor: '#93C5FD',
+  },
+  bookmarkIcon: {
+    fontSize: 16,
+  },
 });
