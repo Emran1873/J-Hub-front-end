@@ -46,13 +46,14 @@ export function BookmarksModal({
                       accessibilityRole="button"
                       accessibilityLabel="Remove bookmark"
                       onPress={() => onToggleBookmark(item.id)}
-                      style={styles.iconButton}
+                      style={({ pressed }) => [styles.iconButton, pressed && styles.iconButtonPressed]}
                     >
-                      <Text style={styles.iconText}>🔖</Text>
+                      <Text style={styles.iconText}>★</Text>
                     </Pressable>
                   </View>
 
                   <Text style={styles.bookmarkedSalary}>{item.salary}</Text>
+                  <Text style={styles.bookmarkedDeadline}>Deadline: {item.deadline || 'Rolling'}</Text>
                   <Text numberOfLines={3} style={styles.bookmarkedDescription}>
                     {item.description}
                   </Text>
@@ -143,6 +144,12 @@ const styles = StyleSheet.create({
   bookmarkedSalary: {
     color: colors.success,
     fontWeight: '700',
+    marginBottom: 4,
+  },
+  bookmarkedDeadline: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    fontWeight: '600',
     marginBottom: 8,
   },
   bookmarkedDescription: {
@@ -179,11 +186,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconText: {
-    fontSize: 16,
+    fontSize: 15,
+    color: '#D97706',
+  },
+  iconButtonPressed: {
+    transform: [{ scale: 0.92 }],
   },
   applyButton: {
-    backgroundColor: 'rgba(59, 130, 246, 0.34)',
-    borderColor: 'rgba(191, 219, 254, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.28)',
+    borderColor: 'rgba(255, 255, 255, 0.7)',
     borderWidth: 1,
     borderRadius: 10,
     alignItems: 'center',

@@ -14,17 +14,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const formatPostedDate = (days) => {
-  if (days === 0) {
-    return 'Posted today';
-  }
-
-  if (days === 1) {
-    return 'Posted 1 day ago';
-  }
-
-  return `Posted ${days} days ago`;
-};
+const formatPostedDate = (days) => `${days} day${days === 1 ? '' : 's'}`;
 
 const DetailSection = ({ title, items }) => (
   <View style={styles.detailSection}>
@@ -57,9 +47,13 @@ export function JobCard({
         accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark this job'}
         hitSlop={8}
         onPress={() => onToggleBookmark(job.id)}
-        style={[styles.bookmarkIconButton, isBookmarked && styles.bookmarkIconButtonActive]}
+        style={({ pressed }) => [
+          styles.bookmarkIconButton,
+          isBookmarked && styles.bookmarkIconButtonActive,
+          pressed && styles.bookmarkPressed,
+        ]}
       >
-        <Text style={styles.bookmarkIcon}>{isBookmarked ? '🔖' : '📑'}</Text>
+        <Text style={styles.bookmarkIcon}>{isBookmarked ? '★' : '☆'}</Text>
       </Pressable>
 
       <Pressable
@@ -78,14 +72,32 @@ export function JobCard({
         </View>
 
         <Text style={styles.salary}>{job.salary}</Text>
+        <Text style={styles.deadline}>Deadline: {job.deadline || 'Rolling'}</Text>
 
-        <View style={styles.previewContainer}>
-          <Text numberOfLines={2} style={styles.previewText}>{job.description}</Text>
-          <View style={styles.previewMetaRow}>
-            <Text style={styles.previewMetaItem}>📍 {job.location}</Text>
-            <Text style={styles.previewMetaItem}>🧭 {job.level}</Text>
-            <Text style={styles.previewMetaItem}>🕒 {job.employmentType}</Text>
+        <View style={styles.previewShell}>
+          <View style={styles.previewContainer}>
+            <Text numberOfLines={2} style={styles.previewText}>{job.description}</Text>
+            <View style={styles.previewMetaRow}>
+              <Text style={styles.previewMetaItem}>📍 {job.location}</Text>
+              <Text style={styles.previewMetaItem}>🧭 {job.level}</Text>
+              <Text style={styles.previewMetaItem}>🕒 {job.employmentType}</Text>
+            </View>
           </View>
+
+          <View pointerEvents="none" style={styles.fadeLayerOne} />
+          <View pointerEvents="none" style={styles.fadeLayerTwo} />
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Apply to this job"
+            onPress={() => onApply(job.id)}
+            style={({ pressed }) => [
+              styles.applyFloatingButton,
+              pressed && styles.applyFloatingButtonPressed,
+            ]}
+          >
+            <Text style={styles.applyButtonText}>Apply</Text>
+          </Pressable>
         </View>
 
         {isExpanded ? (
@@ -105,17 +117,6 @@ export function JobCard({
           </View>
         ) : null}
       </Pressable>
-
-      <View style={styles.actionsRow}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Apply to this job"
-          onPress={() => onApply(job.id)}
-          style={[styles.actionButton, styles.applyButton]}
-        >
-          <Text style={[styles.actionButtonText, styles.applyButtonText]}>Apply</Text>
-        </Pressable>
-      </View>
     </View>
   );
 }
@@ -175,9 +176,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
-  previewContainer: {
+  deadline: {
+    marginTop: 4,
+    color: colors.textSecondary,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  previewShell: {
     marginTop: 10,
-    opacity: 0.72,
+    minHeight: 124,
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.2)',
+    backgroundColor: 'rgba(248, 250, 252, 0.45)',
+    position: 'relative',
+  },
+  previewContainer: {
+    padding: 10,
+    opacity: 0.75,
   },
   previewText: {
     color: colors.textSecondary,
@@ -191,15 +208,58 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   previewMetaItem: {
-    backgroundColor: 'rgba(248, 250, 252, 0.7)',
+    backgroundColor: 'rgba(248, 250, 252, 0.68)',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(148, 163, 184, 0.35)',
+    borderColor: 'rgba(148, 163, 184, 0.32)',
     color: colors.textMuted,
     fontSize: 11,
     fontWeight: '600',
     paddingHorizontal: 8,
     paddingVertical: 4,
+  },
+  fadeLayerOne: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 48,
+    backgroundColor: 'rgba(248, 250, 252, 0.55)',
+  },
+  fadeLayerTwo: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 28,
+    backgroundColor: 'rgba(248, 250, 252, 0.82)',
+  },
+  applyFloatingButton: {
+    position: 'absolute',
+    left: 10,
+    right: 10,
+    bottom: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.78)',
+    backgroundColor: 'rgba(255, 255, 255, 0.28)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 11,
+    shadowColor: '#94A3B8',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 9,
+    elevation: 2,
+  },
+  applyFloatingButtonPressed: {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    transform: [{ scale: 0.985 }],
+  },
+  applyButtonText: {
+    color: '#0F172A',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   detailsContainer: {
     marginTop: 14,
@@ -250,35 +310,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
   },
-  actionsRow: {
-    marginTop: 12,
-  },
-  actionButton: {
-    flex: 1,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(191, 219, 254, 0.8)',
-    backgroundColor: 'rgba(59, 130, 246, 0.34)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    shadowColor: '#2563EB',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 2,
-  },
-  actionButtonText: {
-    color: colors.textPrimary,
-    fontWeight: '700',
-  },
-  applyButton: {
-    width: '100%',
-  },
-  applyButtonText: {
-    color: '#FFFFFF',
-    letterSpacing: 0.4,
-  },
   bookmarkIconButton: {
     position: 'absolute',
     top: 12,
@@ -294,31 +325,14 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   bookmarkIconButtonActive: {
-    backgroundColor: colors.pillBackground,
-    borderColor: '#93C5FD',
+    backgroundColor: '#FEF3C7',
+    borderColor: '#F59E0B',
+  },
+  bookmarkPressed: {
+    transform: [{ scale: 0.92 }],
   },
   bookmarkIcon: {
-    fontSize: 16,
-  },
-  bookmarkIconButton: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2,
-  },
-  bookmarkIconButtonActive: {
-    backgroundColor: colors.pillBackground,
-    borderColor: '#93C5FD',
-  },
-  bookmarkIcon: {
-    fontSize: 16,
+    fontSize: 18,
+    color: '#D97706',
   },
 });
