@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: 'rgba(248, 250, 252, 0.72)',
+    backgroundColor: 'rgba(248, 250, 252, 0.82)',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(148, 163, 184, 0.45)',
   },
