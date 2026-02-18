@@ -45,7 +45,7 @@ export function JobCard({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark this job'}
-        hitSlop={8}
+        hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
         onPress={() => onToggleBookmark(job.id)}
         style={({ pressed }) => [
           styles.bookmarkIconButton,

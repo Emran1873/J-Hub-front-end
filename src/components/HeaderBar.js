@@ -10,7 +10,9 @@ export function HeaderBar({ bookmarkedCount, onOpenBookmarks }) {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Open bookmarked jobs"
+        hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
         onPress={onOpenBookmarks}
+        pressRetentionOffset={{ top: 16, bottom: 16, left: 16, right: 16 }}
         style={styles.bookmarkHeaderButton}
       >
         <Text style={styles.bookmarkIcon}>★</Text>
