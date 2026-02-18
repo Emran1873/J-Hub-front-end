@@ -13,7 +13,7 @@ export function HeaderBar({ bookmarkedCount, onOpenBookmarks }) {
         onPress={onOpenBookmarks}
         style={styles.bookmarkHeaderButton}
       >
-        <Text style={styles.bookmarkIcon}>🔖</Text>
+        <Text style={styles.bookmarkIcon}>★</Text>
         <View style={styles.counterBadge}>
           <Text style={styles.counterText}>{bookmarkedCount}</Text>
         </View>

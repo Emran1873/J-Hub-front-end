@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     gap: 12,
+    paddingRight: 42,
   },
   titleArea: {
     flex: 1,
@@ -223,16 +224,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: 48,
-    backgroundColor: 'rgba(248, 250, 252, 0.55)',
+    height: 44,
+    backgroundColor: 'rgba(248, 250, 252, 0.26)',
   },
   fadeLayerTwo: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: 28,
-    backgroundColor: 'rgba(248, 250, 252, 0.82)',
+    height: 26,
+    backgroundColor: 'rgba(248, 250, 252, 0.34)',
   },
   applyFloatingButton: {
     position: 'absolute',
@@ -241,8 +242,8 @@ const styles = StyleSheet.create({
     bottom: 8,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.78)',
-    backgroundColor: 'rgba(255, 255, 255, 0.28)',
+    borderColor: 'rgba(255, 255, 255, 0.52)',
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 11,
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   applyFloatingButtonPressed: {
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    backgroundColor: 'rgba(255, 255, 255, 0.26)',
     transform: [{ scale: 0.985 }],
   },
   applyButtonText: {
