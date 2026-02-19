@@ -14,17 +14,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const formatPostedDate = (days) => {
-  if (days === 0) {
-    return 'Posted today';
-  }
-
-  if (days === 1) {
-    return 'Posted 1 day ago';
-  }
-
-  return `Posted ${days} days ago`;
-};
+const formatPostedDate = (days) => `${days} day${days === 1 ? '' : 's'}`;
 
 const DetailSection = ({ title, items }) => (
   <View style={styles.detailSection}>
@@ -54,6 +44,20 @@ export function JobCard({
     <View style={[styles.card, isExpanded && styles.cardExpanded]}>
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark this job'}
+        hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
+        onPress={() => onToggleBookmark(job.id)}
+        style={({ pressed }) => [
+          styles.bookmarkIconButton,
+          isBookmarked && styles.bookmarkIconButtonActive,
+          pressed && styles.bookmarkPressed,
+        ]}
+      >
+        <Text style={styles.bookmarkIcon}>{isBookmarked ? '★' : '☆'}</Text>
+      </Pressable>
+
+      <Pressable
+        accessibilityRole="button"
         accessibilityLabel={`${job.title} at ${job.company}`}
         onPress={handleExpandPress}
       >
@@ -68,6 +72,33 @@ export function JobCard({
         </View>
 
         <Text style={styles.salary}>{job.salary}</Text>
+        <Text style={styles.deadline}>Deadline: {job.deadline || 'Rolling'}</Text>
+
+        <View style={styles.previewShell}>
+          <View style={styles.previewContainer}>
+            <Text numberOfLines={2} style={styles.previewText}>{job.description}</Text>
+            <View style={styles.previewMetaRow}>
+              <Text style={styles.previewMetaItem}>📍 {job.location}</Text>
+              <Text style={styles.previewMetaItem}>🧭 {job.level}</Text>
+              <Text style={styles.previewMetaItem}>🕒 {job.employmentType}</Text>
+            </View>
+          </View>
+
+          <View pointerEvents="none" style={styles.fadeLayerOne} />
+          <View pointerEvents="none" style={styles.fadeLayerTwo} />
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Apply to this job"
+            onPress={() => onApply(job.id)}
+            style={({ pressed }) => [
+              styles.applyFloatingButton,
+              pressed && styles.applyFloatingButtonPressed,
+            ]}
+          >
+            <Text style={styles.applyButtonText}>Apply</Text>
+          </Pressable>
+        </View>
 
         {isExpanded ? (
           <View style={styles.detailsContainer}>
@@ -84,30 +115,8 @@ export function JobCard({
 
             <Text style={styles.tapHint}>Tap card area again to collapse</Text>
           </View>
-        ) : (
-          <Text style={styles.tapHint}>Tap to view full job details</Text>
-        )}
+        ) : null}
       </Pressable>
-
-      <View style={styles.actionsRow}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark this job'}
-          onPress={() => onToggleBookmark(job.id)}
-          style={[styles.actionButton, isBookmarked && styles.bookmarkActive]}
-        >
-          <Text style={styles.actionButtonText}>{isBookmarked ? '🔖 Saved' : '🔖 Save'}</Text>
-        </Pressable>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Apply to this job"
-          onPress={() => onApply(job.id)}
-          style={[styles.actionButton, styles.applyButton]}
-        >
-          <Text style={[styles.actionButtonText, styles.applyButtonText]}>Apply</Text>
-        </Pressable>
-      </View>
     </View>
   );
 }
@@ -125,6 +134,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 16,
     elevation: 2,
+    position: 'relative',
   },
   cardExpanded: {
     borderColor: colors.accent,
@@ -134,6 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     gap: 12,
+    paddingRight: 42,
   },
   titleArea: {
     flex: 1,
@@ -165,6 +176,91 @@ const styles = StyleSheet.create({
     color: colors.success,
     fontSize: 16,
     fontWeight: '700',
+  },
+  deadline: {
+    marginTop: 4,
+    color: colors.textSecondary,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  previewShell: {
+    marginTop: 10,
+    minHeight: 124,
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.2)',
+    backgroundColor: 'rgba(248, 250, 252, 0.45)',
+    position: 'relative',
+  },
+  previewContainer: {
+    padding: 10,
+    opacity: 0.75,
+  },
+  previewText: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  previewMetaRow: {
+    marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  previewMetaItem: {
+    backgroundColor: 'rgba(248, 250, 252, 0.68)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.32)',
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '600',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  fadeLayerOne: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 44,
+    backgroundColor: 'rgba(248, 250, 252, 0.26)',
+  },
+  fadeLayerTwo: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 26,
+    backgroundColor: 'rgba(248, 250, 252, 0.34)',
+  },
+  applyFloatingButton: {
+    position: 'absolute',
+    left: 10,
+    right: 10,
+    bottom: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.52)',
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 11,
+    shadowColor: '#94A3B8',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 9,
+    elevation: 2,
+  },
+  applyFloatingButtonPressed: {
+    backgroundColor: 'rgba(255, 255, 255, 0.26)',
+    transform: [{ scale: 0.985 }],
+  },
+  applyButtonText: {
+    color: '#0F172A',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   detailsContainer: {
     marginTop: 14,
@@ -215,34 +311,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
   },
-  actionsRow: {
-    marginTop: 12,
-    flexDirection: 'row',
-    gap: 10,
-  },
-  actionButton: {
-    flex: 1,
-    borderRadius: 10,
+  bookmarkIconButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#F8FAFC',
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    zIndex: 2,
   },
-  actionButtonText: {
-    color: colors.textPrimary,
-    fontWeight: '700',
+  bookmarkIconButtonActive: {
+    backgroundColor: '#FEF3C7',
+    borderColor: '#F59E0B',
   },
-  bookmarkActive: {
-    backgroundColor: colors.pillBackground,
-    borderColor: '#93C5FD',
+  bookmarkPressed: {
+    transform: [{ scale: 0.92 }],
   },
-  applyButton: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
-  },
-  applyButtonText: {
-    color: '#FFFFFF',
+  bookmarkIcon: {
+    fontSize: 18,
+    color: '#D97706',
   },
 });
