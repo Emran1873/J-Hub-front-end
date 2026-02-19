@@ -19,6 +19,10 @@
         "backgroundColor": "#FFFFFF"
       }
     },
-    "web": {}
+    "web": {},
+    "splash": {
+      "backgroundColor": "#FFFFFF",
+      "resizeMode": "contain"
+    }
   }
 }
