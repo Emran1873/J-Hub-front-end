@@ -16,7 +16,7 @@ import { HeaderBar } from './src/components/HeaderBar';
 import { JobCard } from './src/components/JobCard';
 import { colors } from './src/theme/colors';
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'http://localhost:5000'; // Update this when backend host changes
 
 const toPostedDaysAgo = (postedAt) => {
   if (!postedAt) {
