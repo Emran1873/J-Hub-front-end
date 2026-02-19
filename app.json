@@ -9,9 +9,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jhub.jobfetching"
     },
-    "android": {},
+    "android": {
+      "package": "com.jhub.jobfetching",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF"
+      }
+    },
     "web": {}
   }
 }
