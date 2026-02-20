@@ -1,7 +1,8 @@
 # API List for J-Hub Front End
 
 ## Active API base
-- `http://localhost:5000`
+- `EXPO_PUBLIC_API_BASE_URL` (recommended for real device, e.g. `http://192.168.1.50:5000`)
+- Fallback if env var is missing: `http://localhost:5000`
 
 ## API calls currently used in code
 1. `GET /jobs`
