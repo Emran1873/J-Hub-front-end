@@ -16,7 +16,7 @@ import { HeaderBar } from './src/components/HeaderBar';
 import { JobCard } from './src/components/JobCard';
 import { colors } from './src/theme/colors';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = 'http://192.168.1.50:5000';
 
 const toPostedDaysAgo = (postedAt) => {
   if (!postedAt) {
