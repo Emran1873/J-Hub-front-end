@@ -65,7 +65,10 @@ export default function App() {
 
   const addDebugStep = useCallback((label, status = 'info') => {
     const stamp = new Date().toLocaleTimeString();
-    setDebugChecklist((current) => [...current.slice(-39), { id: `${Date.now()}-${Math.random()}`, stamp, label, status }]);
+    setDebugChecklist((current) => [
+      ...current.slice(-39),
+      { id: `${Date.now()}-${Math.random()}`, stamp, label, status },
+    ]);
   }, []);
 
   const fetchJobs = useCallback(async () => {
@@ -77,12 +80,16 @@ export default function App() {
     setIsLoadingJobs(true);
     setJobsError('');
     const requestUrl = `${API_BASE_URL}/jobs`;
+
     addDebugStep(`Trying API: ${requestUrl}`);
     addDebugStep(`Checking backend health: ${API_BASE_URL}/`);
 
     try {
       const healthResponse = await fetch(`${API_BASE_URL}/`);
-      addDebugStep(`Backend health returned status ${healthResponse.status}`, healthResponse.ok ? 'success' : 'error');
+      addDebugStep(
+        `Backend health returned status ${healthResponse.status}`,
+        healthResponse.ok ? 'success' : 'error'
+      );
 
       addDebugStep('Checking internet path: https://clients3.google.com/generate_204');
       const internetResponse = await fetch('https://clients3.google.com/generate_204');
@@ -94,6 +101,7 @@ export default function App() {
       addDebugStep(`Fetching jobs from ${requestUrl}`);
       const response = await fetch(requestUrl);
       addDebugStep(`Jobs endpoint status ${response.status}`, response.ok ? 'success' : 'error');
+
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
       }
@@ -113,6 +121,7 @@ export default function App() {
         error instanceof Error
           ? error.message
           : 'Could not load jobs from API. Please try again.';
+
       setJobsError(errorMessage);
       addDebugStep(`Fetch failed: ${errorMessage}`, 'error');
       setJobs([]);
@@ -125,6 +134,7 @@ export default function App() {
   useEffect(() => {
     addDebugStep(`Debug runner started. Auto-retry every 2s. API base: ${API_BASE_URL}`);
     fetchJobs();
+
     const intervalId = setInterval(() => {
       fetchJobs();
     }, 2000);
@@ -203,7 +213,13 @@ export default function App() {
         onToggleBookmark={toggleBookmark}
       />
     ),
-    [bookmarkedJobIds, bookmarkedExpandedJobId, handleApply, toggleBookmarkedExpandedCard, toggleBookmark]
+    [
+      bookmarkedJobIds,
+      bookmarkedExpandedJobId,
+      handleApply,
+      toggleBookmarkedExpandedCard,
+      toggleBookmark,
+    ]
   );
 
   return (
@@ -247,8 +263,19 @@ export default function App() {
                 <Text style={styles.debugPanelTitle}>Live Debug Checklist</Text>
                 <Text style={styles.debugPanelMeta}>Auto-retry: every 2 seconds</Text>
                 {debugChecklist.map((step) => (
-                  <Text key={step.id} style={[styles.debugLine, step.status === 'error' ? styles.debugLineError : step.status === 'success' ? styles.debugLineSuccess : null]}>
-                    {step.status === 'error' ? '❌' : step.status === 'success' ? '✅' : '•'} [{step.stamp}] {step.label}
+                  <Text
+                    key={step.id}
+                    style={[
+                      styles.debugLine,
+                      step.status === 'error'
+                        ? styles.debugLineError
+                        : step.status === 'success'
+                          ? styles.debugLineSuccess
+                          : null,
+                    ]}
+                  >
+                    {step.status === 'error' ? '❌' : step.status === 'success' ? '✅' : '•'} [
+                    {step.stamp}] {step.label}
                   </Text>
                 ))}
               </View>
