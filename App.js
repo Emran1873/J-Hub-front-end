@@ -60,13 +60,18 @@ export default function App() {
   const [jobs, setJobs] = useState([]);
   const [isLoadingJobs, setIsLoadingJobs] = useState(true);
   const [jobsError, setJobsError] = useState('');
+  const [connectionDebug, setConnectionDebug] = useState('');
 
   const fetchJobs = useCallback(async () => {
     setIsLoadingJobs(true);
     setJobsError('');
+    const requestUrl = `${API_BASE_URL}/jobs`;
+    setConnectionDebug(`Connecting to ${requestUrl}`);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/jobs`);
+      const response = await fetch(requestUrl);
+      setConnectionDebug(`Connected to ${requestUrl} (status ${response.status})`);
+
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
       }
@@ -75,16 +80,19 @@ export default function App() {
       const incomingJobs = Array.isArray(payload) ? payload : payload.jobs;
 
       if (!Array.isArray(incomingJobs)) {
+        setConnectionDebug(`Received unexpected payload type from ${requestUrl}`);
         throw new Error('Invalid jobs response format. Expected an array.');
       }
 
       setJobs(incomingJobs.map(normalizeJob));
+      setConnectionDebug(`Loaded ${incomingJobs.length} jobs from ${requestUrl}`);
     } catch (error) {
-      setJobsError(
+      const errorMessage =
         error instanceof Error
           ? error.message
-          : 'Could not load jobs from API. Please try again.'
-      );
+          : 'Could not load jobs from API. Please try again.';
+      setJobsError(errorMessage);
+      setConnectionDebug(`Failed to connect to ${requestUrl}: ${errorMessage}`);
       setJobs([]);
     } finally {
       setIsLoadingJobs(false);
@@ -199,10 +207,17 @@ export default function App() {
             )
           }
           ListHeaderComponent={
-            <HeaderBar
-              bookmarkedCount={bookmarkedJobIds.length}
-              onOpenBookmarks={openBookmarksPage}
-            />
+            <View>
+              <HeaderBar
+                bookmarkedCount={bookmarkedJobIds.length}
+                onOpenBookmarks={openBookmarksPage}
+              />
+              <View style={styles.debugBanner}>
+                <Text style={styles.debugBannerText}>
+                  {connectionDebug || `Using API base ${API_BASE_URL}`}
+                </Text>
+              </View>
+            </View>
           }
           maxToRenderPerBatch={8}
           removeClippedSubviews
@@ -266,6 +281,20 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 16,
     paddingBottom: 24,
+  },
+  debugBanner: {
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(248, 250, 252, 0.9)',
+  },
+  debugBannerText: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    lineHeight: 16,
   },
   messageState: {
     borderWidth: 1,
