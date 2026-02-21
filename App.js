@@ -92,11 +92,20 @@ export default function App() {
       );
 
       addDebugStep('Checking internet path: https://clients3.google.com/generate_204');
-      const internetResponse = await fetch('https://clients3.google.com/generate_204');
-      addDebugStep(
-        `Google connectivity status ${internetResponse.status}`,
-        internetResponse.ok ? 'success' : 'error'
-      );
+      try {
+        const internetResponse = await fetch('https://clients3.google.com/generate_204');
+        addDebugStep(
+          `Google connectivity status ${internetResponse.status}`,
+          internetResponse.ok ? 'success' : 'error'
+        );
+      } catch (internetError) {
+        const internetMessage =
+          internetError instanceof Error ? internetError.message : 'Unknown internet check error';
+        addDebugStep(
+          `Google connectivity check failed: ${internetMessage} (continuing to backend check)`,
+          'error'
+        );
+      }
 
       addDebugStep(`Fetching jobs from ${requestUrl}`);
       const response = await fetch(requestUrl);
