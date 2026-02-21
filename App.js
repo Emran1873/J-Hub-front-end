@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -60,17 +60,47 @@ export default function App() {
   const [jobs, setJobs] = useState([]);
   const [isLoadingJobs, setIsLoadingJobs] = useState(true);
   const [jobsError, setJobsError] = useState('');
-  const [connectionDebug, setConnectionDebug] = useState('');
+  const [debugChecklist, setDebugChecklist] = useState([]);
+  const isPollingRef = useRef(false);
+
+  const addDebugStep = useCallback((label, status = 'info') => {
+    const stamp = new Date().toLocaleTimeString();
+    setDebugChecklist((current) => [
+      ...current.slice(-39),
+      { id: `${Date.now()}-${Math.random()}`, stamp, label, status },
+    ]);
+  }, []);
 
   const fetchJobs = useCallback(async () => {
+    if (isPollingRef.current) {
+      return;
+    }
+
+    isPollingRef.current = true;
     setIsLoadingJobs(true);
     setJobsError('');
     const requestUrl = `${API_BASE_URL}/jobs`;
-    setConnectionDebug(`Connecting to ${requestUrl}`);
+
+    addDebugStep(`Trying API: ${requestUrl}`);
+    addDebugStep(`Checking backend health: ${API_BASE_URL}/`);
 
     try {
+      const healthResponse = await fetch(`${API_BASE_URL}/`);
+      addDebugStep(
+        `Backend health returned status ${healthResponse.status}`,
+        healthResponse.ok ? 'success' : 'error'
+      );
+
+      addDebugStep('Checking internet path: https://clients3.google.com/generate_204');
+      const internetResponse = await fetch('https://clients3.google.com/generate_204');
+      addDebugStep(
+        `Google connectivity status ${internetResponse.status}`,
+        internetResponse.ok ? 'success' : 'error'
+      );
+
+      addDebugStep(`Fetching jobs from ${requestUrl}`);
       const response = await fetch(requestUrl);
-      setConnectionDebug(`Connected to ${requestUrl} (status ${response.status})`);
+      addDebugStep(`Jobs endpoint status ${response.status}`, response.ok ? 'success' : 'error');
 
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
@@ -80,28 +110,39 @@ export default function App() {
       const incomingJobs = Array.isArray(payload) ? payload : payload.jobs;
 
       if (!Array.isArray(incomingJobs)) {
-        setConnectionDebug(`Received unexpected payload type from ${requestUrl}`);
+        addDebugStep('Payload shape mismatch (expected array or { jobs: [] })', 'error');
         throw new Error('Invalid jobs response format. Expected an array.');
       }
 
       setJobs(incomingJobs.map(normalizeJob));
-      setConnectionDebug(`Loaded ${incomingJobs.length} jobs from ${requestUrl}`);
+      addDebugStep(`Loaded ${incomingJobs.length} jobs`, 'success');
     } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
           : 'Could not load jobs from API. Please try again.';
+
       setJobsError(errorMessage);
-      setConnectionDebug(`Failed to connect to ${requestUrl}: ${errorMessage}`);
+      addDebugStep(`Fetch failed: ${errorMessage}`, 'error');
       setJobs([]);
     } finally {
       setIsLoadingJobs(false);
+      isPollingRef.current = false;
     }
-  }, []);
+  }, [addDebugStep]);
 
   useEffect(() => {
+    addDebugStep(`Debug runner started. Auto-retry every 2s. API base: ${API_BASE_URL}`);
     fetchJobs();
-  }, [fetchJobs]);
+
+    const intervalId = setInterval(() => {
+      fetchJobs();
+    }, 2000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [addDebugStep, fetchJobs]);
 
   const sortedJobs = useMemo(
     () => [...jobs].sort((a, b) => a.postedDaysAgo - b.postedDaysAgo),
@@ -172,7 +213,13 @@ export default function App() {
         onToggleBookmark={toggleBookmark}
       />
     ),
-    [bookmarkedJobIds, bookmarkedExpandedJobId, handleApply, toggleBookmarkedExpandedCard, toggleBookmark]
+    [
+      bookmarkedJobIds,
+      bookmarkedExpandedJobId,
+      handleApply,
+      toggleBookmarkedExpandedCard,
+      toggleBookmark,
+    ]
   );
 
   return (
@@ -212,10 +259,25 @@ export default function App() {
                 bookmarkedCount={bookmarkedJobIds.length}
                 onOpenBookmarks={openBookmarksPage}
               />
-              <View style={styles.debugBanner}>
-                <Text style={styles.debugBannerText}>
-                  {connectionDebug || `Using API base ${API_BASE_URL}`}
-                </Text>
+              <View style={styles.debugPanel}>
+                <Text style={styles.debugPanelTitle}>Live Debug Checklist</Text>
+                <Text style={styles.debugPanelMeta}>Auto-retry: every 2 seconds</Text>
+                {debugChecklist.map((step) => (
+                  <Text
+                    key={step.id}
+                    style={[
+                      styles.debugLine,
+                      step.status === 'error'
+                        ? styles.debugLineError
+                        : step.status === 'success'
+                          ? styles.debugLineSuccess
+                          : null,
+                    ]}
+                  >
+                    {step.status === 'error' ? '❌' : step.status === 'success' ? '✅' : '•'} [
+                    {step.stamp}] {step.label}
+                  </Text>
+                ))}
               </View>
             </View>
           }
@@ -282,7 +344,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 24,
   },
-  debugBanner: {
+  debugPanel: {
     marginBottom: 10,
     borderWidth: 1,
     borderColor: colors.border,
@@ -291,10 +353,28 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: 'rgba(248, 250, 252, 0.9)',
   },
-  debugBannerText: {
+  debugPanelTitle: {
+    color: colors.textPrimary,
+    fontSize: 14,
+    fontWeight: '800',
+    marginBottom: 4,
+  },
+  debugPanelMeta: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    marginBottom: 6,
+  },
+  debugLine: {
     color: colors.textSecondary,
     fontSize: 12,
     lineHeight: 16,
+    marginBottom: 2,
+  },
+  debugLineSuccess: {
+    color: '#166534',
+  },
+  debugLineError: {
+    color: '#991B1B',
   },
   messageState: {
     borderWidth: 1,
