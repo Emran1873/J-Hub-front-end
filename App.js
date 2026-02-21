@@ -71,6 +71,7 @@ export default function App() {
     try {
       const response = await fetch(requestUrl);
       setConnectionDebug(`Connected to ${requestUrl} (status ${response.status})`);
+
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
       }
@@ -212,7 +213,9 @@ export default function App() {
                 onOpenBookmarks={openBookmarksPage}
               />
               <View style={styles.debugBanner}>
-                <Text style={styles.debugBannerText}>{connectionDebug || `Using API base ${API_BASE_URL}`}</Text>
+                <Text style={styles.debugBannerText}>
+                  {connectionDebug || `Using API base ${API_BASE_URL}`}
+                </Text>
               </View>
             </View>
           }
